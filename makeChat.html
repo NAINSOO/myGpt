@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    
+    .chat-content { height: 500px; overflow-y: scroll; background: whitesmoke; margin: 10px;}
+    .line { margin-top: 10px; display: flex;}
+    .input-box { background: #eee; padding: 5px; width:30%;}
+    .chat-box { background:bisque; padding:10px; max-width: 500px; margin: 10px; border-radius: 20px;}
+    .mine {margin-left: auto;}
+
+    .line img{
+      display:inline;
+      margin : 5px;
+      height : 50px;
+      width: 50px;
+      object-fit: cover;
+      border-radius: 20px;
+    }
+        /* 6.	Pseudo-class 2개 이상, pseudo-element 2개 이상, attribute selector 2개 이상, combinator 5개 이상 */
+
+    section[class~="box"]{
+            text-align: center;
+    }
+
+    header[class="box"]{
+        text-align: center;
+    }
+
+    header h1{
+      background-color: bisque;
+      font-style: bold;
+      border-radius: 30px;
+    }
+
+   /* 7.	Float 및 clear 활용하여 웹의 layout 구성 필수 */
+    nav{
+      border: 1px solid #FF1493;
+      width: 150px;
+      float: left; 
+      margin: 10px;
+      margin-top: 0px;
+      padding: 5px;
+      background-color: gray;
+    }
+    
+    nav a{
+      text-decoration : none;
+      color :white;
+    }
+  </style>
+  <script>
+    function myGetCurrentDate(){
+      var currentDate = new Date();
+      var dateString = currentDate.toLocaleDateString();
+      var timeString = currentDate.toLocaleTimeString();
+      var datetimeString = dateString + " " + timeString;
+      return datetimeString;
+    }
+
+    function store(name, data){
+      var storedData = localStorage.getItem(name);
+
+      if (storedData) {
+        var parsedData = JSON.parse(storedData);
+        parsedData.arr.push(data);
+        localStorage.setItem(name, JSON.stringify(parsedData));
+      }else{
+        var temp = {
+          "arr" : []
+        }
+        temp.arr.push(data);
+        localStorage.setItem(name, JSON.stringify(temp));
+      }
+    }
+
+    function read(name){
+      // 저장된 JSON 데이터 가져오기
+      var storedData = localStorage.getItem(name);
+
+      // JSON 문자열을 객체로 변환
+      var parsedData = JSON.parse(storedData);
+
+      parsedData.arr.forEach(element => {
+         // 가져온 데이터 사용
+        console.log("------------");
+        console.log(element.date); 
+        console.log(element.job);
+        console.log(element.content); 
+        console.log("------------");
+      });
+     
+    }
+  </script>
+</head>
+<body>
+  <header class="box">
+    <h1>채팅봇 이용하기</h1>
+  </header>
+  <nav>
+    <a href="./makeChat.html">채팅하기</a>
+    <br>
+    <a href="./chatlog.html">로그보기</a>
+    <br>
+    <a href="./makeImg.html">이미지만들기</a>
+  </nav>
+  <div class="chat-content"></div>
+
+  <section class="box">
+    <input class="input-box" id="input">
+    <button id="send">전송</button>
+  </section>
+
+  <script src="http://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script >
+    //전송 버튼 누를 때 동작 코드
+    document.querySelector('#send').addEventListener('click', function(){
+
+      // 8.	잘못된 동작에 대한 에러 핸들링 두개 이상 구현 필수
+      if(document.querySelector('#input').value==""){
+        return;
+      }
+
+      var template = `<div class="line">
+        <span class="chat-box mine">${ document.querySelector('#input').value }</span>
+      </div>`
+      document.querySelector('.chat-content').insertAdjacentHTML('beforeend', template);
+
+      //채팅 기록 저장
+      var currDate = myGetCurrentDate();
+      var data ={
+        "date" : currDate,
+        "job" : "me",
+        "content" : document.querySelector('#input').value
+      };
+      store("chatLog", data);
+
+      var api_key = "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"; // 인증키
+      var prompt = document.querySelector('#input').value; // 챗봇에 전달할 메시지
+      var api_url = "https://api.openai.com/v1/chat/completions"; // REST API 엔드포인트
+
+//2. OPEN WEB API 2개 이상 활용
+//13. 수업시간에 배운 jQuery/AJAX/JSON 기능 활용
+// AJAX를 이용한 REST API 호출
+    $.ajax({
+      url: api_url,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + api_key
+      },
+      data: JSON.stringify({
+        "model": "gpt-3.5-turbo",
+        "messages": [{"role": "user", "content": prompt}]
+      }),
+      success: function(response) {
+        console.log(response.choices[0].message.content);
+        var template = `<div class="line">
+          <img src="./bot.png" alt/>
+          <span class="chat-box">${ response.choices[0].message.content }</span>
+        </div>`
+        document.querySelector('.chat-content').insertAdjacentHTML('beforeend', template);
+// 채팅기록 저장후 console 출력
+        data ={
+          "date" : currDate,
+          "job" : "bot",
+          "content" : response.choices[0].message.content
+        };
+
+        store("chatLog", data);
+        read("chatLog");
+      },
+      error: function(error) {
+        console.log(error);
+      }
+  });  
+});
+  </script>
+
+</body>
+</html>

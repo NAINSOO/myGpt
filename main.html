@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>         //1. 기능 시나리오 3가지 필수 구현
+        function moveToOthers(num){
+            switch(num){
+                case 1:            
+                    location.href = "./makeChat.html";
+                    break;
+                case 2:
+                    location.href = "./makeImg.html";
+                    break;
+                case 3:
+                    location.href = "./chatlog.html";
+
+            }
+        }
+    </script>
+
+<style>
+        /*10.	flex 혹은 grid 한번 이상 필수 활용*/
+        navigation{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* 6.	Pseudo-class 2개 이상, pseudo-element 2개 이상, attribute selector 2개 이상, combinator 5개 이상 */
+
+         .cell img {
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 30px;
+        }
+
+        /* 6.	Pseudo-class 2개 이상, pseudo-element 2개 이상, attribute selector 2개 이상, combinator 5개 이상 */
+        .func{
+            margin: 10px;
+        }
+
+        .cell{
+            margin: 10px;
+            align-items: center;
+        }
+
+        header{
+            text-align: center;
+        }
+
+        /* 6.	Pseudo-class 2개 이상, pseudo-element 2개 이상, attribute selector 2개 이상, combinator 5개 이상 */
+        header h1{
+            background-color: bisque;
+            font-style: bold;
+            border-radius: 30px;
+        }
+
+        .func button{
+            background-color:bisque;
+            border-radius: 30px;
+        }
+
+        footer{
+            text-align: center;
+        }
+    
+    </style>
+</head>
+
+
+<body>
+    <!--5.	Semantic (header, navigation, footer) 필수 활용-->
+    <header>
+        <h1>인공지능 활용 서비스</h1>
+    </header>
+    <navigation>
+    <form class="func">
+        <button type="button" onclick='moveToOthers(1);'>
+            <div class="cell">
+                <img src="./chatgpt.png" alt/>
+            </div>
+            <p>채팅봇 이용하기</p>
+        </button>
+    </form>
+
+    <form class="func">
+        <button type="button" onclick='moveToOthers(2);'>
+            <div class="cell">
+                <img src="./dalle.png" alt/>
+            </div>
+            <p>이미지 생성하기</p>
+        </button>
+    </form>
+
+    
+    <form class="func">
+        <button type="button" onclick='moveToOthers(3);'>
+            <div class="cell">
+                <img src="./db.png" alt/>
+            </div>
+            <p>채팅 로그확인하기</p>
+        </button>
+    </form>
+    </navigation>
+
+    <footer>
+        <p>copyright &copy; 201924648 nainsoo</p>
+    </footer>
+</body>
+</html>

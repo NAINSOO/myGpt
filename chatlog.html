@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* 9.	모바일 환경 대응 구현 필수 (width: 900px 이하일때 동작, 기존 웹사이트는 width: 1060px로 구현)*/
+        @media screen and (min-width: 1060) {
+            body {
+                background-color: white;
+                color: black;
+            }
+        }
+
+        @media screen and (max-width: 900px) {
+            body {
+                background-color: black;
+                color: white;
+            }
+        }
+
+        /* 6.	Pseudo-class 2개 이상, pseudo-element 2개 이상, attribute selector 2개 이상, combinator 5개 이상 */
+        
+        header h1{
+            text-align: center;
+            background-color: bisque;
+            font-style: bold;
+            border-radius: 30px;
+        }
+
+        table {
+            border: 2px solid;
+            border-collapse: collapse;
+            text-align: center;
+            width: 100%;
+        }
+
+        th, td{
+            border: 1px solid;
+            padding:10px;
+        }
+
+        th{
+            background-color: gray; color: white;
+        }
+
+        th:nth-child(1){
+            width:15%;
+        }
+
+        th:nth-child(2){
+            width:8%;
+        }
+    
+    </style>
+
+    <script>
+        function read(name){
+      // 저장된 JSON 데이터 가져오기
+      var storedData = localStorage.getItem(name);
+
+      // JSON 문자열을 객체로 변환
+      var parsedData = JSON.parse(storedData);
+            
+      //table element 가져오기
+      var table = document.getElementById("myTable");
+
+      parsedData.arr.forEach(element => {
+        var newRow = table.insertRow();
+         // 가져온 데이터 사용
+        var one = newRow.insertCell(0);
+        var two = newRow.insertCell(1);
+        var three = newRow.insertCell(2);
+
+        one.innerText = element.date;
+        two.innerText = element.job;
+        three.innerText = element.content;
+      });
+     
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>채팅 로그 확인</h1>
+    </header>
+    <section>
+        <table id="myTable">
+            <thead>
+                <tr>
+                    <th>날짜</th>
+                    <th>역할</th>
+                    <th>내용</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+    </section>
+
+    <script>
+         read("chatLog");
+    </script>
+</body>
+</html>

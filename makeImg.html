@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+    /* 6.	Pseudo-class 2개 이상, pseudo-element 2개 이상, attribute selector 2개 이상, combinator 5개 이상 */
+        #id1{
+            text-align: center;
+            background-color: bisque;
+            font-style: bold;
+            border-radius: 30px;
+        }
+        #id2{
+            text-align: center;
+        }
+        .chat-content { height: 500px; overflow-y: scroll; background: whitesmoke; margin: 10px;}
+        .chat-box {background: #eee; padding: 5px; width:30%; }
+
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+   
+        .image-cell {
+            width: 300px;
+            height: 300px;
+            margin: 10px;
+            border: 1px solid black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .image-cell img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+    
+    </style>
+</head>
+<body>
+    <script src="http://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <header id="id1">
+        <h1>이미지 생성</h1>
+    </header>
+    <div class="chat-content"></div>
+
+    <!--3.	서로 다른 <input> 3개 이상 활용 -->
+    <section id="id2">
+        <form style="display: inline-block; margin-right: 30px;">
+            <label>
+            4개
+            <input type="radio" name="option" checked="checked"/>
+            </label>
+            <label>
+            8개
+            <input type="radio" name="option" />
+            </label>
+        </form>
+        <input class="chat-box" id="input" value="an astronaut playing basketball with cats in space, digital art">
+        <button id="send">전송</button>
+    </section>
+    <script>
+        document.querySelector('#send').addEventListener('click', function(){
+
+            // 8.	잘못된 동작에 대한 에러 핸들링 두개 이상 구현 필수
+            if(document.querySelector('#input').value==""){
+                 return;
+            }
+
+            var radios = document.getElementsByName('option');
+            var n = 4;
+
+            if (radios[1].checked){
+                n = 8;
+            }
+
+            var api_key = "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"; // 인증키
+            var myPrompt = document.querySelector('#input').value; // 챗봇에 전달할 메시지
+            var api_url = "https://api.openai.com/v1/images/generations"; // REST API 엔드포인트
+
+// 2.Open Web API 2개 이상 활용
+
+            // AJAX를 이용한 REST API 호출
+            $.ajax({
+                url: api_url,
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + api_key
+                },
+                data: JSON.stringify({
+                "prompt": myPrompt,
+                "n": n,
+                "size": "1024x1024"
+                }),
+            success: function(response) {
+                //11.	DOM 활용하여 HTML element 혹은 CSS property 합쳐서 5개 이상 다루기
+                document.querySelector('#input').innerHTML="";
+                var title = document.createElement("p");
+                title.innerHTML = "prompt : "+myPrompt;
+
+                var date = document.createElement("p");
+                var currentDate = new Date();
+                var dateString = currentDate.toLocaleDateString();
+                var timeString = currentDate.toLocaleTimeString();
+                var datetimeString = dateString + " " + timeString;
+                date.innerHTML = datetimeString;
+
+                var container = document.createElement("div");
+                container.className = "image-container";
+                var imageUrls = response.data;
+            
+                imageUrls.forEach(function(url) {
+                    var cell = document.createElement("div");
+                    cell.className = "image-cell";
+
+                    var img = document.createElement("img");
+                    var strUrl = url.url;
+                    img.src = strUrl;
+
+                    cell.appendChild(img);
+                    container.appendChild(cell);
+                    document.querySelector(".chat-content").appendChild(date);
+                    document.querySelector(".chat-content").appendChild(title);
+                    document.querySelector(".chat-content").appendChild(container);
+                    });
+                },
+                //12.	입력 Format, 네트워크 연결 등의 에러 처리 기능 필수 구현
+            error: function(error) {
+                console.log(error);
+                }
+            });
+        });
+
+    </script>
+
+</body>
+</html>
